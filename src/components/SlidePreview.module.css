@@ -1,0 +1,24 @@
+.slidePreviewContainer {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.element {
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elementText {
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.elementImage {
+  object-fit: cover;
+}

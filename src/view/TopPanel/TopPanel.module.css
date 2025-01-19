@@ -1,0 +1,207 @@
+* {
+    box-sizing: border-box;
+}
+
+.topPanel {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    background-color: #2c3e50;
+    border-bottom: 1px solid #34495e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    top: 0;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 0;
+    color: #ecf0f1;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.title:hover {
+    color: #3498db;
+}
+
+.titleInput {
+    font-size: 1.2em;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.titleInput:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.tabsContainer {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tabButton {
+    background-color: transparent;
+    border: none;
+    color: #ecf0f1;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.tabButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tabButton.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+label.button {
+    cursor: pointer;
+    margin: 0;
+}
+
+.backgroundControl {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.backgroundControl input[type="color"] {
+    width: 40px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.backgroundControl input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    width: 200px;
+}
+
+.backgroundControl button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.backgroundControl button:hover {
+    background-color: #2980b9;
+}
+
+.textControls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.textControls select,
+.textControls input[type="number"],
+.textControls input[type="color"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.textControls input[type="number"] {
+    width: 60px;
+}
+
+.textControls input[type="color"] {
+    width: 40px;
+    height: 30px;
+    padding: 2px;
+}
+
+@media (max-width: 768px) {
+    .buttonsContainer {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+}

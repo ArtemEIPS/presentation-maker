@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.slideList {
+  width: 20%;
+  height: 100%; 
+  background-color: #f0f0f0; 
+  border-right: 1px solid #ddd; 
+  overflow-y: auto; 
+}
+
+.workspace {
+  flex-grow: 1; 
+  background-color: #ffffff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
