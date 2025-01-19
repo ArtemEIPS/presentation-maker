@@ -14,6 +14,7 @@ import editorSchema from './store/schema';
 import { PDFDocument, rgb } from 'pdf-lib';
 import fontKit from '@pdf-lib/fontkit';
 import customFont from './fonts/arial-unicode-ms.ttf';
+import { EditorType } from './store/EditorType';
 
 const ajv = new Ajv();
 const validate = ajv.compile(editorSchema);
@@ -25,16 +26,21 @@ const App: React.FC = () => {
   const editor = useSelector((state: RootState) => state.present);
   const [selectedSlideId, setSelectedSlideId] = useState<string | null>(null);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); 
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   useEffect(() => {
     const savedEditor = localStorage.getItem('presentationEditor');
     if (savedEditor) {
       try {
-        const parsedEditor = JSON.parse(savedEditor);
+        const parsedEditor = JSON.parse(savedEditor) as EditorType;
         if (validate(parsedEditor)) {
           dispatch({ type: 'LOAD_EDITOR', payload: parsedEditor });
-          
+
+          if (parsedEditor.presentation && parsedEditor.presentation.slides.length > 0) {
+            const firstSlideId = parsedEditor.presentation.slides[0].id;
+            setSelectedSlideId(firstSlideId);
+            setCurrentSlideIndex(0);
+          }
         } else {
           console.error('Invalid editor data in local storage');
         }
@@ -43,6 +49,14 @@ const App: React.FC = () => {
       }
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (editor.presentation.slides.length > 0 && !selectedSlideId) {
+      const firstSlideId = editor.presentation.slides[0].id;
+      setSelectedSlideId(firstSlideId);
+      setCurrentSlideIndex(0);
+    }
+  }, [editor.presentation.slides, selectedSlideId]);
 
   useEffect(() => {
     localStorage.setItem('presentationEditor', JSON.stringify(editor));
@@ -70,7 +84,7 @@ const App: React.FC = () => {
 
   const handleAddElement = useCallback((type: 'text' | 'image', content?: string) => {
     if (!selectedSlideId) return;
-  
+
     if (type === 'text') {
       const newElement: TextElement = {
         id: uuidv4(),
@@ -87,18 +101,18 @@ const App: React.FC = () => {
       const img = new Image();
       img.src = content;
       img.onload = () => {
-        const maxWidth = 500; 
-        const maxHeight = 500; 
-  
+        const maxWidth = 500;
+        const maxHeight = 500;
+
         let width = img.width;
         let height = img.height;
-  
+
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width *= ratio;
           height *= ratio;
         }
-  
+
         const newElement: ImageElement = {
           id: uuidv4(),
           type: 'image',
@@ -170,19 +184,17 @@ const App: React.FC = () => {
   const handleExportToPdf = useCallback(async () => {
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontKit);
-  
+
     const fontBytes = await fetch(customFont).then((res) => res.arrayBuffer());
     const customFontEmbedded = await pdfDoc.embedFont(fontBytes);
-  
+
     for (const slide of editor.presentation.slides) {
       const page = pdfDoc.addPage();
       page.setSize(SLIDE_WIDTH, SLIDE_HEIGHT);
-  
+
       const { height } = page.getSize();
-  
-      // Обработка фона слайда
+
       if (slide.background.type === 'color') {
-        // Заливка фона цветом
         page.drawRectangle({
           x: 0,
           y: 0,
@@ -203,7 +215,7 @@ const App: React.FC = () => {
           }
           const imageBytes = await response.arrayBuffer();
           const mimeType = response.headers.get('content-type');
-  
+
           let image;
           if (mimeType === 'image/png') {
             image = await pdfDoc.embedPng(imageBytes);
@@ -226,7 +238,7 @@ const App: React.FC = () => {
             y: 0,
             width: SLIDE_WIDTH,
             height: SLIDE_HEIGHT,
-            color: rgb(1, 1, 1), 
+            color: rgb(1, 1, 1),
             opacity: 1,
           });
         }
@@ -254,7 +266,7 @@ const App: React.FC = () => {
             }
             const imageBytes = await response.arrayBuffer();
             const mimeType = response.headers.get('content-type');
-  
+
             let image;
             if (mimeType === 'image/png') {
               image = await pdfDoc.embedPng(imageBytes);
@@ -276,11 +288,11 @@ const App: React.FC = () => {
         }
       }
     }
-  
+
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-  
+
     const a = document.createElement('a');
     a.href = url;
     a.download = 'presentation.pdf';
