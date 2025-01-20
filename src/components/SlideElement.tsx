@@ -63,6 +63,7 @@ const SlideElementComponent: React.FC<SlideElementProps> = ({
       className={styles.element}
       style={elementInlineStyles}
       onMouseDown={(e) => {
+        e.stopPropagation();
         handleMouseDown(e, 'drag');
         onElementClick(element.id);
       }}

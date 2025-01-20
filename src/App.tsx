@@ -28,6 +28,10 @@ const App: React.FC = () => {
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
+  const handleElementClick = useCallback((elementId: string | null) => {
+    setSelectedElementId(elementId);
+  }, []);
+
   useEffect(() => {
     const savedEditor = localStorage.getItem('presentationEditor');
     if (savedEditor) {
@@ -385,7 +389,7 @@ const App: React.FC = () => {
                     });
                     dispatch({ type: 'UPDATE_SLIDES', payload: updatedSlides });
                   }}
-                  onElementClick={(elementId) => setSelectedElementId(elementId)}
+                  onElementClick={handleElementClick}
                 />
               </div>
             </>

@@ -6,7 +6,7 @@ import SlideElementComponent from '../../components/SlideElement';
 type WorkspaceProps = {
   slide: Slide | null;
   onUpdateElement: (elementId: string, updatedElement: Partial<SlideElement>) => void;
-  onElementClick: (elementId: string) => void;
+  onElementClick: (elementId: string | null) => void;
 };
 
 const Workspace: React.FC<WorkspaceProps> = ({ slide, onUpdateElement, onElementClick }) => {
@@ -28,6 +28,7 @@ const Workspace: React.FC<WorkspaceProps> = ({ slide, onUpdateElement, onElement
 
   const handleWorkspaceClick = (e: React.MouseEvent) => {
     if (workspaceRef.current && e.target === workspaceRef.current) {
+      setSelectedElementId(null);
       setSelectedElementId(null);
     }
   };

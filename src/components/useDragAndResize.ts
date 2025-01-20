@@ -20,8 +20,6 @@ const useDragAndResize = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
-  console.log('position', position)
-  console.log('initialPosition', position)
 
   useEffect(() => {
     setPosition(initialPosition)
@@ -111,12 +109,8 @@ const useDragAndResize = ({
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setIsResizing(false);
-    setResizeDirection(null);
-    
-    onUpdateElementCallback?.({size, position});
-    console.log(size , position)  
-    console.log('onPositionChange', onUpdateElementCallback)
-    
+    setResizeDirection(null);    
+    onUpdateElementCallback?.({size, position});    
   }, [onUpdateElementCallback, position, size]);
 
   useEffect(() => {
