@@ -45,7 +45,7 @@ const Workspace: React.FC<WorkspaceProps> = ({ slide, onUpdateElement, onElement
         style={{
           background: slide.background.type === 'color'
             ? slide.background.color
-            : `url(${slide.background.imageUrl}) no-repeat center/cover`,
+            : `url(${slide.background.imageData}) no-repeat center/cover`,
         }}
       >
         {slide.elements.map((element) => (

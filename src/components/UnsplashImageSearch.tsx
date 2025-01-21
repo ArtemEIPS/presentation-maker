@@ -29,7 +29,6 @@ const UnsplashImageSearch: React.FC<UnsplashImageSearchProps> = ({ onSelectImage
 
       const imageUrls = data.results.map((result: any) => result.urls.regular);
       setImages(imageUrls);
-      console.log('Images:', imageUrls); 
     } catch (error) {
       console.error('Error fetching images from Unsplash:', error);
     } finally {

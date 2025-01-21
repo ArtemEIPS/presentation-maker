@@ -87,13 +87,32 @@ const TopPanel: React.FC<TopPanelProps> = ({
     navigate('/player');
   };
 
-  const handleBackgroundChange = () => {
+  const handleBackgroundChange = async () => {
     const isColor = /^#[0-9A-Fa-f]{6}$/.test(backgroundInput);
-    onChangeBackground(
-      isColor
-        ? { type: 'color', color: backgroundInput }
-        : { type: 'image', imageUrl: backgroundInput }
-    );
+  
+    if (isColor) {
+      onChangeBackground({ type: 'color', color: backgroundInput });
+    } else {
+      try {
+        const response = await fetch(backgroundInput);
+        if (!response.ok) {
+          throw new Error('Не удалось загрузить изображение');
+        }
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          onChangeBackground({ type: 'image', imageData: base64data });
+        };
+        reader.onerror = () => {
+          throw new Error('Ошибка при чтении изображения');
+        };
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        alert('Не удалось загрузить изображение. Проверьте ссылку и попробуйте снова.');
+      }
+    }
   };
 
   const handleBackgroundColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -264,7 +283,7 @@ const TopPanel: React.FC<TopPanelProps> = ({
           </>
         )}
 
-        {selectedElementId && (
+        {selectedElementId  && (
           <div className={styles.textControls}>
             <select value={fontFamily} onChange={handleFontFamilyChange}>
               <option value="Arial">Arial</option>

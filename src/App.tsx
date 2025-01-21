@@ -147,7 +147,7 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   const handleExport = useCallback(() => {
-    const defaultFileName = 'presentation.json';
+    const defaultFileName = 'Новая презентация';
     const fileName = window.prompt('Введите имя файла', defaultFileName);
 
     if (fileName) {
@@ -188,16 +188,16 @@ const App: React.FC = () => {
   const handleExportToPdf = useCallback(async () => {
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontKit);
-
+  
     const fontBytes = await fetch(customFont).then((res) => res.arrayBuffer());
     const customFontEmbedded = await pdfDoc.embedFont(fontBytes);
-
+  
     for (const slide of editor.presentation.slides) {
       const page = pdfDoc.addPage();
       page.setSize(SLIDE_WIDTH, SLIDE_HEIGHT);
-
+  
       const { height } = page.getSize();
-
+  
       if (slide.background.type === 'color') {
         page.drawRectangle({
           x: 0,
@@ -211,24 +211,21 @@ const App: React.FC = () => {
           ),
           opacity: 1,
         });
-      } else if (slide.background.type === 'image') {
+      } else if (slide.background.type === 'image' && slide.background.imageData) {
         try {
-          const response = await fetch(slide.background.imageUrl);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch background image: ${response.statusText}`);
-          }
-          const imageBytes = await response.arrayBuffer();
-          const mimeType = response.headers.get('content-type');
-
+          const base64Data = slide.background.imageData.split(',')[1];
+          const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+  
+          const mimeType = slide.background.imageData.split(';')[0].split(':')[1];
           let image;
           if (mimeType === 'image/png') {
             image = await pdfDoc.embedPng(imageBytes);
           } else if (mimeType === 'image/jpeg') {
             image = await pdfDoc.embedJpg(imageBytes);
           } else {
-            console.error('Unsupported image format:', mimeType);
             continue;
           }
+  
           page.drawImage(image, {
             x: 0,
             y: 0,
@@ -236,7 +233,7 @@ const App: React.FC = () => {
             height: SLIDE_HEIGHT,
           });
         } catch (error) {
-          console.error('Error embedding background image:', error);
+          console.error('Ошибка при вставке фонового изображения:', error);
           page.drawRectangle({
             x: 0,
             y: 0,
@@ -247,6 +244,7 @@ const App: React.FC = () => {
           });
         }
       }
+  
       for (const element of slide.elements) {
         if (element.type === 'text') {
           const textElement = element as TextElement;
@@ -261,16 +259,12 @@ const App: React.FC = () => {
               parseInt(textElement.fontColor.slice(5, 7), 16) / 255
             ),
           });
-        } else if (element.type === 'image') {
-          const imageElement = element as ImageElement;
+        } else if (element.type === 'image' && element.content) {
           try {
-            const response = await fetch(imageElement.content);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch image: ${response.statusText}`);
-            }
-            const imageBytes = await response.arrayBuffer();
-            const mimeType = response.headers.get('content-type');
-
+            const base64Data = element.content.split(',')[1];
+            const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+  
+            const mimeType = element.content.split(';')[0].split(':')[1];
             let image;
             if (mimeType === 'image/png') {
               image = await pdfDoc.embedPng(imageBytes);
@@ -280,31 +274,36 @@ const App: React.FC = () => {
               console.error('Unsupported image format:', mimeType);
               continue;
             }
+  
             page.drawImage(image, {
-              x: imageElement.position.x,
-              y: height - imageElement.position.y - imageElement.size.height,
-              width: imageElement.size.width,
-              height: imageElement.size.height,
+              x: element.position.x,
+              y: height - element.position.y - element.size.height,
+              width: element.size.width,
+              height: element.size.height,
             });
           } catch (error) {
-            console.error('Error embedding image:', error);
+            console.error('Ошибка при вставке изображения:', error);
           }
         }
       }
     }
-
+  
     const pdfBytes = await pdfDoc.save();
+
+    const presentationTitle = editor.presentation.title || 'presentation';
+    const fileName = `${presentationTitle.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-
+  
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'presentation.pdf';
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [editor.presentation.slides]);
+  }, [editor.presentation.slides, editor.presentation.title]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -67,7 +67,7 @@ type SlideElement = TextElement | ImageElement;
 
 type SlideBackground = 
     | {type: 'color', color: string}
-    | {type: 'image', imageUrl: string}
+    | {type: 'image', imageData: string}
 
 
 function renamePresentationTitle_(editor: EditorType, newTitle: string): EditorType {

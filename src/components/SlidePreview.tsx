@@ -22,7 +22,7 @@ const SlidePreview: React.FC<SlidePreviewProps> = ({ slide, width = 100, height 
         backgroundColor:
           slide.background.type === 'color' ? slide.background.color : 'transparent',
         backgroundImage:
-          slide.background.type === 'image' ? `url(${slide.background.imageUrl})` : 'none',
+          slide.background.type === 'image' ? `url(${slide.background.imageData})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -41,7 +41,7 @@ const SlidePreview: React.FC<SlidePreviewProps> = ({ slide, width = 100, height 
           {element.type === 'text' && (
             <span
               className={styles.elementText}
-              style={{ color: element.fontColor, fontSize: '1px' }} 
+              style={{ color: element.fontColor, fontSize: element.fontSize * 0.1, fontFamily: element.fontFamily }} 
             >
               {element.content}
             </span>

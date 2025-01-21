@@ -134,7 +134,6 @@ label.button {
     display: flex;
     gap: 10px;
     align-items: center;
-    margin-top: 10px;
 }
 
 .backgroundControl input[type="color"] {
@@ -177,6 +176,7 @@ label.button {
     gap: 10px;
     align-items: center;
     margin-top: 10px;
+    margin-left: auto;
 }
 
 .textControls select,

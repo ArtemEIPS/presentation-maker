@@ -97,6 +97,4 @@ export const getEditor = (): EditorType => ({
         showModalWindowSetBackground: false,
     }
 });
-export const addEditorChangeHandler = (callback: (editor: EditorType) => void) => {
-    // Заглушка 
-};
+export const addEditorChangeHandler = (callback: (editor: EditorType) => void) => {};

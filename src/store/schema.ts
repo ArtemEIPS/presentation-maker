@@ -82,9 +82,9 @@ const slideBackgroundSchema: JSONSchemaType<SlideBackground> = {
       type: 'object',
       properties: {
         type: { type: 'string', const: 'image' },
-        imageUrl: { type: 'string' },
+        imageData: { type: 'string' },
       },
-      required: ['type', 'imageUrl'],
+      required: ['type', 'imageData'],
     },
   ],
 };

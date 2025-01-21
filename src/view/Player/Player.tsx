@@ -55,7 +55,7 @@ const Player: React.FC<PlayerProps> = ({ initialSlideIndex, onExit }) => {
         handlePreviousSlide();
       }
     };
-
+    
     window.addEventListener('keydown', handleKeyboardEvents);
     return () => window.removeEventListener('keydown', handleKeyboardEvents);
   }, [handleNextSlide, handlePreviousSlide]);
@@ -67,10 +67,10 @@ const Player: React.FC<PlayerProps> = ({ initialSlideIndex, onExit }) => {
       <div className={styles.playerContainer}>
         <div className={styles.buttonContainer}>
           <button className={styles.button} onClick={fullScreenHandler.enter}>
-            Open on full screen
+            Открыть на весь экран
           </button>
           <button className={styles.button} onClick={handleBackToEditor}>
-            Back to editor
+            Вернуться к редактору
           </button>
         </div>
         {slides.length > 0 && (
@@ -85,7 +85,7 @@ const Player: React.FC<PlayerProps> = ({ initialSlideIndex, onExit }) => {
                       : 'transparent',
                   backgroundImage:
                     currentSlide.background.type === 'image'
-                      ? `url(${currentSlide.background.imageUrl})`
+                      ? `url(${currentSlide.background.imageData})`
                       : 'none',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
@@ -142,7 +142,7 @@ const Player: React.FC<PlayerProps> = ({ initialSlideIndex, onExit }) => {
                 onClick={handlePreviousSlide}
                 disabled={currentSlideIndex === 0}
               >
-                Previous
+                Предыдущий слайд
               </button>
               <div className={styles.slideNum}>{currentSlideIndex + 1}</div>
               <button
@@ -150,7 +150,7 @@ const Player: React.FC<PlayerProps> = ({ initialSlideIndex, onExit }) => {
                 onClick={handleNextSlide}
                 disabled={currentSlideIndex === slides.length - 1}
               >
-                Next
+                Следующий слайд
               </button>
             </div>
           </>
